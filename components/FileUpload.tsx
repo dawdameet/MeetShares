@@ -50,36 +50,64 @@ export default function FileUpload() {
   };
 
   return (
-    <div className="p-6 max-w-md mx-auto bg-white rounded-xl shadow-lg text-center space-y-4">
-      <h2 className="text-xl font-semibold text-gray-800">Upload a File</h2>
+    <div className="p-8 max-w-lg mx-auto bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl text-center space-y-6">
+      <h2 className="text-2xl font-bold text-gray-900 tracking-tight">
+        Upload Your File
+      </h2>
 
-      <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition">
-        <FaCloudUploadAlt className="text-4xl text-gray-400 group-hover:text-blue-500" />
-        <p className="mt-2 text-sm text-gray-500">Click to browse or drag & drop</p>
-        <input type="file" className="hidden" onChange={handleFileChange} />
+      <label
+        className={`flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 ${
+          file
+            ? "border-blue-500 bg-blue-50"
+            : "border-gray-300 hover:border-blue-400 hover:bg-blue-50"
+        }`}
+      >
+        <FaCloudUploadAlt
+          className={`text-5xl transition-colors duration-300 ${
+            file ? "text-blue-500" : "text-gray-400 group-hover:text-blue-400"
+          }`}
+        />
+        <p className="mt-3 text-sm text-gray-600">
+          {file ? "Ready to upload!" : "Click to browse or drag & drop"}
+        </p>
+        <input
+          type="file"
+          className="hidden"
+          onChange={handleFileChange}
+        />
       </label>
 
       {file && (
-        <p className="text-gray-700 text-sm">
-          Selected: <span className="font-medium">{file.name}</span>
+        <p className="text-gray-700 text-sm flex items-center justify-center space-x-2">
+          <span className="font-medium truncate max-w-xs">{file.name}</span>
+          <span className="text-gray-400">({(file.size / 1024).toFixed(1)} KB)</span>
         </p>
       )}
 
       <button
         onClick={handleUpload}
         disabled={uploading}
-        className={`w-full py-2 text-white rounded-lg ${
-          uploading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
-        } transition`}
+        className={`w-full py-3 px-4 text-white font-semibold rounded-lg shadow-md transition-all duration-200 ${
+          uploading
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:scale-95"
+        }`}
       >
-        {uploading ? "Uploading..." : "Upload"}
+        {uploading ? "Uploading..." : "Upload Now"}
       </button>
 
       {downloadLink && (
-        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg flex items-center justify-between">
-          <p className="truncate">{downloadLink}</p>
-          <button onClick={handleCopy} className="ml-2 text-green-700 hover:text-green-900">
-            {copied ? <FaCheck /> : <FaCopy />}
+        <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg flex items-center justify-between shadow-sm transition-all duration-300 hover:shadow-md">
+          <p className="text-sm truncate max-w-[80%]">{downloadLink}</p>
+          <button
+            onClick={handleCopy}
+            className="p-2 rounded-full bg-green-100 hover:bg-green-200 transition-colors duration-200"
+          >
+            {copied ? (
+              <FaCheck className="text-green-600" />
+            ) : (
+              <FaCopy className="text-green-700" />
+            )}
           </button>
         </div>
       )}
