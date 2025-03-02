@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { FaCloudUploadAlt, FaCheck, FaCopy, FaFile, FaImage, FaFilePdf, FaFileWord, FaFileExcel, FaFileAlt } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import { FaCloudUploadAlt, FaCheck, FaCopy, FaFile, FaFilePdf, FaFileWord, FaFileExcel, FaFileArchive, FaFileAlt, FaFileVideo, FaFileAudio, FaFileCode } from "react-icons/fa";
 
 export default function FileUpload() {
   const [file, setFile] = useState<File | null>(null);
@@ -9,6 +9,35 @@ export default function FileUpload() {
   const [downloadLink, setDownloadLink] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [fileType, setFileType] = useState<string>("");
+
+  // Handle file preview generation
+  useEffect(() => {
+    if (!file) {
+      setPreview(null);
+      setFileType("");
+      return;
+    }
+
+    // Determine file type
+    const extension = file.name.split('.').pop()?.toLowerCase() || '';
+    setFileType(extension);
+
+    // Only create previews for image files
+    if (!file.type.startsWith('image/')) {
+      setPreview(null);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(file);
+    setPreview(objectUrl);
+
+    // Free memory when component unmounts
+    return () => {
+      URL.revokeObjectURL(objectUrl);
+    };
+  }, [file]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0] || null;
@@ -92,13 +121,21 @@ export default function FileUpload() {
     const extension = file.name.split('.').pop()?.toLowerCase() || '';
     
     if (['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(extension)) {
-      return <FaImage className="text-5xl text-blue-500" />;
+      return <FaFile className="text-5xl text-blue-500" />;
     } else if (extension === 'pdf') {
       return <FaFilePdf className="text-5xl text-red-500" />;
     } else if (['doc', 'docx'].includes(extension)) {
       return <FaFileWord className="text-5xl text-blue-600" />;
     } else if (['xls', 'xlsx', 'csv'].includes(extension)) {
       return <FaFileExcel className="text-5xl text-green-600" />;
+    } else if (['zip', 'rar', '7z', 'tar', 'gz'].includes(extension)) {
+      return <FaFileArchive className="text-5xl text-amber-600" />;
+    } else if (['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv'].includes(extension)) {
+      return <FaFileVideo className="text-5xl text-purple-500" />;
+    } else if (['mp3', 'wav', 'ogg', 'flac', 'm4a'].includes(extension)) {
+      return <FaFileAudio className="text-5xl text-pink-500" />;
+    } else if (['html', 'css', 'js', 'jsx', 'ts', 'tsx', 'json', 'xml', 'py', 'java', 'c', 'cpp'].includes(extension)) {
+      return <FaFileCode className="text-5xl text-gray-700" />;
     } else {
       return <FaFileAlt className="text-5xl text-amber-500" />;
     }
@@ -111,51 +148,138 @@ export default function FileUpload() {
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
+  // Get file type label
+  const getFileTypeLabel = () => {
+    if (!fileType) return '';
+    
+    const typeMap: {[key: string]: string} = {
+      pdf: 'PDF Document',
+      doc: 'Word Document',
+      docx: 'Word Document',
+      xls: 'Excel Spreadsheet',
+      xlsx: 'Excel Spreadsheet',
+      ppt: 'PowerPoint',
+      pptx: 'PowerPoint',
+      jpg: 'JPEG Image',
+      jpeg: 'JPEG Image',
+      png: 'PNG Image',
+      gif: 'GIF Image',
+      svg: 'SVG Image',
+      mp3: 'Audio File',
+      mp4: 'Video File',
+      zip: 'Archive',
+      rar: 'Archive',
+      txt: 'Text File',
+    };
+    
+    return typeMap[fileType] || `${fileType.toUpperCase()} File`;
+  };
+  
+  // Get file type background color
+  const getFileTypeColor = () => {
+    if (!fileType) return 'bg-gray-100';
+    
+    const colorMap: {[key: string]: string} = {
+      pdf: 'bg-red-100',
+      doc: 'bg-blue-100',
+      docx: 'bg-blue-100',
+      xls: 'bg-green-100',
+      xlsx: 'bg-green-100',
+      ppt: 'bg-orange-100',
+      pptx: 'bg-orange-100',
+      jpg: 'bg-blue-100',
+      jpeg: 'bg-blue-100',
+      png: 'bg-blue-100',
+      gif: 'bg-purple-100',
+      svg: 'bg-indigo-100',
+      mp3: 'bg-pink-100',
+      mp4: 'bg-purple-100',
+      zip: 'bg-amber-100',
+      rar: 'bg-amber-100',
+      txt: 'bg-gray-100',
+    };
+    
+    return colorMap[fileType] || 'bg-gray-100';
+  };
+
   return (
     <div className="p-8 max-w-lg mx-auto bg-white rounded-2xl shadow-xl text-center space-y-6 transition-all duration-300 hover:shadow-2xl">
       <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
         Share Your Files Securely
       </h2>
 
-      <div 
-        className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 ${
-          file
-            ? "border-blue-500 bg-blue-50"
-            : "border-gray-300 hover:border-blue-400 hover:bg-blue-50"
-        }`}
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-        onClick={() => document.getElementById('fileInput')?.click()}
-      >
-        {getFileIcon()}
-        
-        <p className="mt-3 text-sm text-gray-600">
-          {file ? "File selected" : "Click to browse or drag & drop"}
-        </p>
-        
-        {file && (
-          <div className="absolute bottom-0 left-0 right-0 bg-blue-500 bg-opacity-10 p-2">
-            <p className="text-xs text-blue-700 font-medium truncate">
-              {file.name}
-            </p>
+      {!file ? (
+        <div 
+          className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 border-gray-300 hover:border-blue-400 hover:bg-blue-50"
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+          onClick={() => document.getElementById('fileInput')?.click()}
+        >
+          <FaCloudUploadAlt className="text-5xl text-gray-400" />
+          
+          <p className="mt-3 text-sm text-gray-600">
+            Click to browse or drag & drop
+          </p>
+          
+          <input
+            id="fileInput"
+            type="file"
+            className="hidden"
+            onChange={handleFileChange}
+          />
+        </div>
+      ) : (
+        <div className="w-full">
+          {/* File Preview Section */}
+          <div className="mb-4 rounded-xl overflow-hidden border border-gray-200">
+            {/* Image Preview */}
+            {preview ? (
+              <div className="relative w-full pt-[56.25%] bg-gray-50">
+                <img 
+                  src={preview} 
+                  alt="File preview" 
+                  className="absolute inset-0 w-full h-full object-contain"
+                />
+              </div>
+            ) : (
+              /* File Type Icon for non-image files */
+              <div className={`py-8 ${getFileTypeColor()} flex flex-col items-center justify-center`}>
+                {getFileIcon()}
+                <p className="mt-3 text-sm font-medium">{getFileTypeLabel()}</p>
+              </div>
+            )}
+            
+            {/* File Info Bar */}
+            <div className="flex items-center justify-between px-4 py-3 bg-gray-50 border-t border-gray-200">
+              <span className="font-medium text-sm truncate max-w-[60%]">{file.name}</span>
+              <span className="text-xs text-gray-500">{formatFileSize(file.size)}</span>
+            </div>
           </div>
-        )}
-        
-        <input
-          id="fileInput"
-          type="file"
-          className="hidden"
-          onChange={handleFileChange}
-        />
-      </div>
-
-      {file && (
-        <div className="flex items-center justify-between px-4 py-2 bg-gray-50 rounded-lg">
-          <div className="flex items-center">
-            <FaFile className="text-gray-500 mr-2" />
-            <span className="font-medium text-sm truncate max-w-xs">{file.name}</span>
+          
+          {/* Action Buttons */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                setFile(null);
+                setPreview(null);
+              }}
+              className="flex-1 py-2 px-4 border border-gray-300 text-gray-700 font-medium rounded-lg transition-colors hover:bg-gray-50"
+            >
+              Change File
+            </button>
+            
+            <button
+              onClick={() => document.getElementById('fileInput')?.click()}
+              className="hidden"
+            >
+              <input
+                id="fileInput"
+                type="file"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+            </button>
           </div>
-          <span className="text-xs text-gray-500 ml-2">{formatFileSize(file.size)}</span>
         </div>
       )}
 
