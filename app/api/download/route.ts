@@ -13,7 +13,6 @@ export async function GET(req: NextRequest) {
   try {
     const fileBuffer = await fs.readFile(filePath);
 
-    // Delete the file after sending it
     await fs.unlink(filePath);
 
     return new NextResponse(fileBuffer, {

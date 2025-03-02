@@ -11,15 +11,10 @@ export default function Home() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
               </svg>
             </span>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">FileShare</h1>
+            <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">MeetShares</h1>
           </div>
           
-          <nav className="hidden md:flex space-x-6">
-            <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors">Home</a>
-            <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors">Features</a>
-            <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors">Pricing</a>
-            <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors">Help</a>
-          </nav>
+         
         </div>
       </header>
       
@@ -33,12 +28,12 @@ export default function Home() {
           </p>
         </div>
         
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-8 flex">
           <div className="col-span-2">
             <FileUpload />
           </div>
           
-          <div className="bg-white rounded-2xl shadow-xl p-6 flex flex-col justify-center">
+          <div className="bg-white rounded-2xl shadow-xl p-6 flex flex-col justify-center ">
             <h3 className="text-xl font-semibold mb-4 text-gray-800">Why Choose Us?</h3>
             
             <ul className="space-y-4">
@@ -89,7 +84,7 @@ export default function Home() {
       
       <footer className="w-full bg-white border-t border-gray-200 py-6 mt-12">
         <div className="max-w-6xl mx-auto px-4 text-center text-sm text-gray-500">
-          <p>© 2025 FileShare. All rights reserved.</p>
+          <p>© 2025 MeetShares. All rights reserved.</p>
         </div>
       </footer>
     </div>
