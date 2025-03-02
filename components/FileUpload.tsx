@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { FaCloudUploadAlt, FaCheck, FaCopy, FaFile, FaFilePdf, FaFileWord, FaFileExcel, FaFileArchive, FaFileAlt, FaFileVideo, FaFileAudio, FaFileCode } from "react-icons/fa";
 
@@ -235,7 +236,7 @@ export default function FileUpload() {
             {/* Image Preview */}
             {preview ? (
               <div className="relative w-full pt-[56.25%] bg-gray-50">
-                <img 
+                <Image 
                   src={preview} 
                   alt="File preview" 
                   className="absolute inset-0 w-full h-full object-contain"

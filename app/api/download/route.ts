@@ -22,6 +22,6 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (error) {
-    return NextResponse.json({ error: "File not found or already deleted" }, { status: 404 });
+    return NextResponse.json({ error: `File not found or already deleted ${error}` }, { status: 404 });
   }
 }
